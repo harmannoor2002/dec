@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  backend:
+    image: 203783636897.dkr.ecr.us-east-1.amazonaws.com/my-backend-repo:latest
+    ports:
+      - "8000:8000"
+    restart: always
+
+  frontend:
+    image: 203783636897.dkr.ecr.us-east-1.amazonaws.com/my-frontend-repo:latest
+    ports:
+      - "80:80"
+    restart: always

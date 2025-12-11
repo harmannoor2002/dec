@@ -14,7 +14,8 @@ COPY backend/requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-COPY backend/ /app/
+COPY . /app/
+
 
 ENV DJANGO_SETTINGS_MODULE=hello_world.settings.production
 

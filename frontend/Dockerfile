@@ -1,5 +1,8 @@
+# Build stage
 FROM node:18-alpine AS build
+
 WORKDIR /app
+<<<<<<< HEAD
 # copy kary ga dependencies files into container
 COPY package.json yarn.lock ./
 # install all nodes dependencies
@@ -16,6 +19,20 @@ RUN yarn build
 #base image for nginx
 #deploying your app to the live server (production stage)
 
+=======
+
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
+
+COPY . .
+
+# Fix OpenSSL issue
+ENV NODE_OPTIONS=--openssl-legacy-provider
+
+RUN yarn build
+
+# Production stage
+>>>>>>> fc064dcd2abebd4ac76312dfd63b452d50c5d06d
 FROM nginx:alpine
 
 # copy the build files from the build stage to nginx html folder

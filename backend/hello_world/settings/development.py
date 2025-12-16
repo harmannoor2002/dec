@@ -8,5 +8,4 @@ SECRET_KEY = "8lj(bgx5_*o%d1$u-#gco+ioorntjjlybb#i1+rl-il0jb=)d7"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS = ["backend"]
+ALLOWED_HOSTS = ["*"]

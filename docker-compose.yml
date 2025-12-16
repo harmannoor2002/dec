@@ -6,6 +6,7 @@ services:
     ports:
       - "8000:8000"
     restart: always
+  
 
   frontend:
     image: 203783636897.dkr.ecr.us-east-1.amazonaws.com/my-frontend-repo:latest

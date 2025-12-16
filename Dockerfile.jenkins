@@ -1,0 +1,33 @@
+FROM jenkins/jenkins:lts
+# Switch to root user to install dependencies
+USER root
+
+# Install dependencies
+# update package list and install tools
+# curl, unzip, python3, python3-pip, git, docker.io
+
+RUN apt-get update && apt-get install -y \
+    curl \
+    unzip \
+    python3 \
+    python3-pip \
+    git \
+    docker.io
+
+# Install AWS CLI v2
+# download, unzip, install and clean up
+
+#rmove previous version of aws cli if any
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+    unzip awscliv2.zip && \
+    ./aws/install && \
+    rm -rf awscliv2.zip aws
+
+# Add jenkins user to docker group
+RUN usermod -aG docker jenkins
+# Switch back to jenkins user
+USER jenkins
+
+EXPOSE 8080 50000
+# Copy the Jenkins startup script into the container 
+CMD ["/sbin/tini", "--", "/usr/local/bin/jenkins.sh"]

@@ -1,38 +1,25 @@
-FROM python:3.11-slim
+# Use official Python image
+FROM python:3.9-slim
 
-# Prevent Python from writing .pyc files to disk
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
-
+# Set working directory
 WORKDIR /app
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y \
     build-essential \
-    curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements.txt and install Python dependencies
+# Copy requirements file
 COPY requirements.txt .
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
 
-<<<<<<< HEAD
-# Copy all backend source code
-=======
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
 # Copy backend source code
->>>>>>> b3cfc5f (Fix Dockerfile merge conflicts)
-COPY . /app/
+COPY . .
 
-# Set environment variable for Django
-ENV DJANGO_SETTINGS_MODULE=hello_world.settings.production
+# Expose backend port (change if your app uses different port)
+EXPOSE 5000
 
-# Expose the Django port
-EXPOSE 8000
-
-<<<<<<< HEAD
-# Command to run Django server
-=======
-# Start the Django server
->>>>>>> b3cfc5f (Fix Dockerfile merge conflicts)
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Run the application
+CMD ["python", "app.py"]

@@ -1,43 +1,23 @@
-# Build stage
-FROM node:18-alpine AS build
+# Use Node image
+FROM node:18-alpine
 
+# Set working directory
 WORKDIR /app
 
-# Copy dependencies files and install
-COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
+# Copy package files
+COPY package*.json ./
 
-<<<<<<< HEAD
-# Copy all frontend source code
-=======
-# Copy source code
->>>>>>> b3cfc5f (Fix Dockerfile merge conflicts)
+# Install dependencies
+RUN npm install
+
+# Copy frontend source code
 COPY . .
 
-# Fix OpenSSL issue for Node
-ENV NODE_OPTIONS=--openssl-legacy-provider
+# Build frontend
+RUN npm run build
 
-<<<<<<< HEAD
-# Build the React app for production
-=======
-# Build React app for production
->>>>>>> b3cfc5f (Fix Dockerfile merge conflicts)
-RUN yarn build
+# Expose frontend port
+EXPOSE 3000
 
-# Production stage
-FROM nginx:alpine
-
-<<<<<<< HEAD
-# Copy the build files from the build stage to nginx html folder
-COPY --from=build /app/build /usr/share/nginx/html
-
-# Expose port for nginx
-=======
-# Copy build files from build stage to nginx html folder
-COPY --from=build /app/build /usr/share/nginx/html
-
->>>>>>> b3cfc5f (Fix Dockerfile merge conflicts)
-EXPOSE 80
-
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Start frontend
+CMD ["npm", "start"]

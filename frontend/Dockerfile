@@ -20,4 +20,5 @@ RUN npm run build
 EXPOSE 3000
 
 # Start frontend
-CMD ["npm", "start"]
+CMD ["npm", "start", "--", "--host", "0.0.0.0"]
+

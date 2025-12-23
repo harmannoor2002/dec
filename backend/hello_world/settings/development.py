@@ -8,4 +8,5 @@ SECRET_KEY = "8lj(bgx5_*o%d1$u-#gco+ioorntjjlybb#i1+rl-il0jb=)d7"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['3.226.242.188', 'localhost', '127.0.0.1']
+

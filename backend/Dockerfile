@@ -4,6 +4,7 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y build-essential \
     && rm -rf /var/lib/apt/lists/*
+ENV DJANGO_SETTINGS_MODULE=hello_world.settings.production
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt

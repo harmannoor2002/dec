@@ -1,4 +1,4 @@
-name: AWS TEST
+name: AWS CREDENTIAL TEST
 
 on: [push]
 
@@ -15,5 +15,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Who am I
+      - name: Verify
         run: aws sts get-caller-identity
+

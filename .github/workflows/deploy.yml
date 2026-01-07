@@ -1,20 +1,63 @@
-name: CI/CD Pipeline
+name: CI/CD Pipeline - Docker to AWS ECR & EC2
 
 on:
   push:
     branches:
       - main
 
-jobs:
-  build-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+env:
+  AWS_REGION: us-east-1
+  ECR_REPO_BACKEND: 203783636897.dkr.ecr.us-east-1.amazonaws.com/my-backend-repo
+  ECR_REPO_FRONTEND: 203783636897.dkr.ecr.us-east-1.amazonaws.com/my-frontend-repo
 
-      - name: Deploy site
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./   # root folder of site
-          publish_branch: gh-pages
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      run: |
+        aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REPO_BACKEND
+        aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REPO_FRONTEND
+
+    - name: Build Docker Images
+      run: |
+        docker build -t my-backend:latest backend/
+        docker build -t my-frontend:latest frontend/
+
+    - name: Tag & Push Images to ECR
+      run: |
+        docker tag my-backend:latest $ECR_REPO_BACKEND:latest
+        docker tag my-frontend:latest $ECR_REPO_FRONTEND:latest
+        docker push $ECR_REPO_BACKEND:latest
+        docker push $ECR_REPO_FRONTEND:latest
+
+    - name: Deploy to EC2 via SSH
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+          export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          export AWS_DEFAULT_REGION=${{ env.AWS_REGION }}
+
+          cd /home/ubuntu/dec
+
+          aws ecr get-login-password | docker login --username AWS --password-stdin $ECR_REPO_BACKEND
+          aws ecr get-login-password | docker login --username AWS --password-stdin $ECR_REPO_FRONTEND
+
+          docker-compose down
+          docker-compose pull
+          docker-compose up -d

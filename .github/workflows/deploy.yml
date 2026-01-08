@@ -9,7 +9,7 @@ env:
   AWS_REGION: us-east-1
   ECR_REPO_BACKEND: 203783636897.dkr.ecr.us-east-1.amazonaws.com/my-backend-repo
   ECR_REPO_FRONTEND: 203783636897.dkr.ecr.us-east-1.amazonaws.com/my-frontend-repo
-
+  
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -64,4 +64,7 @@ jobs:
           docker-compose down
           docker-compose pull
           docker-compose up -d
+
+
+
 

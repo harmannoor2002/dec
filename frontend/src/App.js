@@ -16,7 +16,7 @@ function App() {
   return (
     <div className="App">
       <div>
-        <label htmlFor='char-input'>How many characters does</label>
+        <label htmlFor='char-input'>How many characters does it has harman</label>
         <input id='char-input' type='text' />
         <button onClick={handleSubmit}>have?</button>
       </div>

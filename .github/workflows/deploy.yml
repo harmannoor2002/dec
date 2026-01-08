@@ -12,11 +12,11 @@ env:
   
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest #yeh ek linux machine dee ga jahan pipeline chaleggi
 
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v4   # GitHub repo ka code runner machine par copy karta ha
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
@@ -26,10 +26,10 @@ jobs:
         aws-region: us-east-1
 
     - name: Verify AWS Login
-      run: aws sts get-caller-identity
+      run: aws sts get-caller-identity    # aws login successful hai yeh nahi matlb pehle test phir deploy
 
     - name: Login to Amazon ECR
-      run: |
+      run: |    # docker ko ecr say automate karta hai
         aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REPO_BACKEND
         aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REPO_FRONTEND
 
@@ -47,23 +47,23 @@ jobs:
 
     - name: Deploy to EC2 via SSH
       uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.EC2_SSH_KEY }}
-        script: |
-          export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+      with: # action ko input dana kau liya 
+        host: ${{ secrets.EC2_HOST }}     # ec2 ka public ip 
+        username: ${{ secrets.EC2_USER }}  #ec2 ka linux user jo ubuntu rakha hai maina
+        key: ${{ secrets.EC2_SSH_KEY }}     # ec2 ka private key .pem   ssh kay login kay liya hai ec2 
+        script: |     # yaha se ec2 machine ka andar command run hona hai
+          export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} #ec2 ecr say image pull karna kay liya
           export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
           export AWS_DEFAULT_REGION=${{ env.AWS_REGION }}
 
-          cd /home/ubuntu/dec
+          cd /home/ubuntu/dec   is directory mai ja raha hai
 
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_REPO_BACKEND
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_REPO_FRONTEND
 
-          docker-compose down
-          docker-compose pull
-          docker-compose up -d
+          docker-compose down  # delete old container
+          docker-compose pull   #ecr say latest image download ho ge 
+          docker-compose up -d    # container background mai start kay ga
 
 
 

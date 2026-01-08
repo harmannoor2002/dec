@@ -56,7 +56,7 @@ jobs:
           export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
           export AWS_DEFAULT_REGION=${{ env.AWS_REGION }}
 
-          cd /home/ubuntu/dec   is directory mai ja raha hai
+          cd /home/ubuntu/dec  # is directory mai ja raha hai
 
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_REPO_BACKEND
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_REPO_FRONTEND

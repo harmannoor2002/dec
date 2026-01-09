@@ -63,7 +63,7 @@ jobs:
 
           docker-compose down  # delete old container
           docker-compose pull   #ecr say latest image download ho ge 
-          docker-compose up -d    # container background mai start kay ga
+          docker-compose up -d    # container background mai start kay gaa
 
 
 
